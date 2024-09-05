@@ -1,10 +1,13 @@
-import ChatList from "./chatList/chatList";
+
+import ChatList from "./chatList/ChatList";
 import "./list.css";
 import UserInfo from "./userInfo/UserInfo";
 
 export default function List() {
-  return <div className="list">
-    <UserInfo />
-    <ChatList/>
-  </div>;
+  return (
+    <div className="list">
+      <UserInfo />
+      <ChatList />
+    </div>
+  );
 }
