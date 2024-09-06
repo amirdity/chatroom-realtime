@@ -1,33 +1,51 @@
 import { FormEvent, useState } from "react";
 import "./login.css";
 import { toast } from "react-toastify";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../lib/firebase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../../lib/firebase";
 import { doc, setDoc } from "firebase/firestore";
+import upload from "../../lib/upload";
 export default function Login() {
   const [avatar, setAvatar] = useState({
     file: {},
     url: "",
   });
-  console.log(avatar);
-  function handleLogin(e: FormEvent) {
-    e.preventDefault();
-    toast.warn("hello");
+  const [loadingRegister, setLoadingRegister] = useState(false);
+  const [loadingLogin, setLoadingLogin] = useState(false);
+
+  // console.log(avatar);
+ async function handleLogin(e: FormEvent) {
+   e.preventDefault();
+   setLoadingLogin(true);
+   const formData = new FormData(e.target as HTMLFormElement);
+    const { email, password } = Object.fromEntries(formData);
+    try {
+       await signInWithEmailAndPassword(auth, email as string, password as string);
+      toast.success("Logged in successfully");
+    } catch (error) {
+      toast.error((error as Error).message);
+      
+    } finally {
+      setLoadingLogin(false);
+    }
   }
   async function handleRegister(e: FormEvent) {
     e.preventDefault();
+    setLoadingRegister(true);
     const formData = new FormData(e.target as HTMLFormElement);
-    const { username, email, password, file } = Object.fromEntries(formData);
-    console.log(username, file);
+    const { username, email, password } = Object.fromEntries(formData);
+    // console.log(username);
     try {
       const res = await createUserWithEmailAndPassword(
         auth,
         email as string,
         password as string
       );
+      const imgUrl = await upload(avatar.file as File);
       await setDoc(doc(db, "users", res.user.uid), {
         username: username as string,
         email: email as string,
+        avatar: imgUrl,
         id: res.user.uid,
         block: [],
       });
@@ -37,6 +55,10 @@ export default function Login() {
       toast.success("Account created successfully, you are logged in");
     } catch (error) {
       toast.error((error as Error).message);
+      setLoadingRegister(false);
+    } finally {
+      
+      setLoadingRegister(false);
     }
   }
   function handleAvatar(e: React.ChangeEvent<HTMLInputElement>) {
@@ -54,7 +76,9 @@ export default function Login() {
         <form action="" onSubmit={handleLogin}>
           <input type="text" placeholder="Email" name="email" />
           <input type="password" placeholder="Password" name="password" />
-          <button>Sign In</button>
+          <button disabled={loadingLogin}>
+            {loadingLogin ? "Loading..." : " Sign In"}
+          </button>
         </form>
       </div>
       <div className="separator"></div>
@@ -75,7 +99,9 @@ export default function Login() {
           <input type="text" placeholder="Username" name="username" />
           <input type="text" placeholder="Email" name="email" />
           <input type="password" placeholder="Password" name="password" />
-          <button>Sign In</button>
+          <button disabled={loadingRegister}>
+            {loadingRegister ? "Loading..." : " Sign In"}
+          </button>
         </form>
       </div>
     </div>

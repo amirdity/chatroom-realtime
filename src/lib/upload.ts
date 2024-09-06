@@ -3,9 +3,7 @@ import { storage } from "./firebase";
 export default async function upload(file: File) {
   const date = new Date();
   const storageRef = ref(storage, `images/${date + file.name}`);
-
   const uploadTask = uploadBytesResumable(storageRef, file);
-
   return new Promise((resolve, reject) => {
     uploadTask.on(
       "state_changed",
