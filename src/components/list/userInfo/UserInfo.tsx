@@ -1,21 +1,27 @@
-import "./userInfo.css"
-import more from "/more.png"
+import "./userInfo.css";
+import { useUserStore } from "../../../lib/userStore";
+type UserType = {
+  currentUser: {
+    username: string;
+    avatar: string;
+  };
+}
+const Userinfo = () => {
+  const { currentUser } = useUserStore((state)=>state as UserType);
 
-import video from "/video.png";
-import edit from "/edit.png";
-import avatar from "/avatar.png";
-export default function UserInfo() {
   return (
     <div className="userInfo">
       <div className="user">
-        <img src={avatar} alt="" />
-        <h2>amir fattahi</h2>
+        <img src={currentUser.avatar || "./avatar.png"} alt="" />
+        <h2 className="text">{currentUser.username}</h2>
       </div>
       <div className="icons">
-        <img src={more} alt="" />
-        <img src={video} alt="" />
-        <img src={edit} alt="" />
+        <img src="./more.png" alt="" />
+        <img src="./video.png" alt="" />
+        <img src="./edit.png" alt="" />
       </div>
     </div>
   );
-}
+};
+
+export default Userinfo;

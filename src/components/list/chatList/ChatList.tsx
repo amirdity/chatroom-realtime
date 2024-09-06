@@ -8,13 +8,7 @@ export default function ChatList() {
       <div className="search">
         <div className="searchBar">
           <img src="/search.png" alt="" />
-          <input
-            type="text"
-            name=""
-            id=""
-            placeholder="search"
-            className="p-4"
-          />
+          <input type="text" name="" id="" placeholder="search" />
         </div>
         <img
           src={addMode ? "/minus.png" : "/plus.png"}
@@ -72,7 +66,7 @@ export default function ChatList() {
           <p>hello</p>
         </div>
       </div>
-    {addMode &&  <AddUser/>}
+      {addMode && <AddUser />}
     </div>
   );
 }

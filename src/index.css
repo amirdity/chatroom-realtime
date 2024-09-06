@@ -37,3 +37,9 @@ body{
   background: rgb(14, 15, 68);
   border-radius: 10px;
 }
+.loading{
+  padding: 50px;
+  font-size: 36px;
+  border-radius: 10px;
+  background-color: rgba(16, 16, 49, 0.856);
+}
