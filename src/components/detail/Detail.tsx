@@ -1,7 +1,10 @@
+import { auth } from "../../lib/firebase";
 import "./detail.css";
 
 export default function Detail() {
-  function handleLogout() { }
+  function handleLogout() {
+    auth.signOut()
+   }
   const user = {avatar: null, username: null}
   return (
     <div className="detail">
