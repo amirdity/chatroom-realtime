@@ -1,13 +1,19 @@
-import { useState } from 'react'
-import './chatList.css'
+import { useState } from "react";
+import "./chatList.css";
 export default function ChatList() {
-  const [addMode, setAddMode] = useState(false)
+  const [addMode, setAddMode] = useState(false);
   return (
     <div className="chatList">
       <div className="search">
         <div className="searchBar">
-          <img src="/search.png" alt=""/>
-          <input type="text" name="" id="" placeholder="search" className='p-4'/>
+          <img src="/search.png" alt="" />
+          <input
+            type="text"
+            name=""
+            id=""
+            placeholder="search"
+            className="p-4"
+          />
         </div>
         <img
           src={addMode ? "/minus.png" : "/plus.png"}

@@ -4,11 +4,15 @@ import more from "/more.png";
 import video from "/video.png";
 import edit from "/edit.png";
 import EmojiPicker from "emoji-picker-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // own have no picture
 export default function Chat() {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
+  const endRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
   function handleEmoji(e: { emoji: string }) {
     setText((prev) => prev + e.emoji);
     setOpen(false);
@@ -41,7 +45,6 @@ export default function Chat() {
           </div>
         </div>
         <div className="message own">
-          
           <div className="texts">
             <p>
               fsdf dsfsfsd fsd fs fd fds f sdf dfdsfsdf sdfd sfd f sf sdf
@@ -61,7 +64,6 @@ export default function Chat() {
           </div>
         </div>
         <div className="message own">
-          
           <div className="texts">
             <img src="/camera.png" alt="" />
             <p>
@@ -71,6 +73,7 @@ export default function Chat() {
             <span>1 min ago</span>
           </div>
         </div>
+        <div ref={endRef}></div>
       </div>
       <div className="bottom">
         <div className="icons">
