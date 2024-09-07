@@ -5,7 +5,9 @@ import {
   arrayUnion,
   collection,
   doc,
-  getDoc,
+  
+  DocumentData,
+  
   getDocs,
   query,
   serverTimestamp,
@@ -14,11 +16,14 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../../../lib/firebase";
+import { useUserStore } from "../../../../lib/userStore";
 export default function AddUser() {
   const [user, setUser] = useState({
     avatar: null,
-    username: null,
+    username: "",
+    id:""
   });
+  const { currentUser } = useUserStore((state)=>state as DocumentData);
   async function handleSearch(e: FormEvent) {
     e.preventDefault();
     const formData = new FormData();
@@ -29,16 +34,51 @@ export default function AddUser() {
       const q = query(userRef, where("username", "==", username));
 
       const querySnapShot = await getDocs(q);
+      console.log(querySnapShot.docs[0]);
 
       setUser({
         avatar: querySnapShot.docs[0].data().avatar || null,
-        username: querySnapShot.docs[0].data().username || null,
+        username: querySnapShot.docs[0].data().username,
+        id: querySnapShot.docs[0].id,
       });
     } catch (error) {
       toast.error((error as Error).message);
+      console.log(error)
     }
   }
-  function handleAdd() {}
+  const handleAdd = async () => {
+    const chatRef = collection(db, "chats");
+    const userChatsRef = collection(db, "userchats");
+
+    try {
+      const newChatRef = doc(chatRef);
+
+      await setDoc(newChatRef, {
+        createdAt: serverTimestamp(),
+        messages: [],
+      });
+
+      await updateDoc(doc(userChatsRef, user.id), {
+        chats: arrayUnion({
+          chatId: newChatRef.id,
+          lastMessage: "",
+          receiverId: currentUser.id,
+          updatedAt: Date.now(),
+        }),
+      });
+
+      await updateDoc(doc(userChatsRef, currentUser.id), {
+        chats: arrayUnion({
+          chatId: newChatRef.id,
+          lastMessage: "",
+          receiverId: user.id,
+          updatedAt: Date.now(),
+        }),
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="addUser">
       <form onSubmit={handleSearch}>

@@ -28,7 +28,7 @@ export default function App() {
     <div className="container">
       {currentUser ? (
         <>
-          <List />
+          {/* <List /> */}
           <Chat />
           <Detail />
         </>
